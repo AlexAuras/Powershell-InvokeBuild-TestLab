@@ -58,8 +58,8 @@ task 'Clean' {
 task 'Restore' Clean, {
 
     Write-Information "Read modules from Configuration.psd1"
-    Write-Verbose "Import-Psd $((Resolve-Path .\Configuration.psd1).Path)"
-    [ModuleSpecification[]] $RequiredModules = (Import-Psd .\Configuration.psd1 -Verbose:$VerbosePreference).Modules
+    Write-Verbose "Import-PowerShellDataFile $((Resolve-Path .\Configuration.psd1).Path)"
+    [ModuleSpecification[]] $RequiredModules = (Import-PowerShellDataFile .\Configuration.psd1 -Verbose:$VerbosePreference).Modules
     
     Write-Information "Ensure dependency folder"
     New-Item -ItemType Directory -Path $DependenciesFolderPath -Force | Out-Null
@@ -96,7 +96,7 @@ task 'Import' {
 
 # Synopsis: Tells the 'Restore' task to stick to the modules current versions
 task 'Close-Module-Versions' Import, {
-    $config = Import-Psd -Path .\Configuration.psd1
+    $config = Import-PowerShellDataFile -Path .\Configuration.psd1
 
     if($config.Modules[0] -is [string]) {
     
@@ -114,7 +114,7 @@ task 'Close-Module-Versions' Import, {
 
 # Synopsis: Allows the 'Restore' task to load the latest version of the modules
 task 'Open-Module-Versions' {
-    $config = Import-Psd -Path .\Configuration.psd1
+    $config = Import-PowerShellDataFile -Path .\Configuration.psd1
 
     if($config.Modules[0] -is [hashtable]) {
 
